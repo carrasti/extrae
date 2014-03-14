@@ -1,0 +1,40 @@
+{
+  "name": "extrae",
+  "preferGlobal": true,
+  "version": "0.1.0",
+  "author": "Carlos Arrastia <carlos.arrastia@gmail.com>",
+  "description": "A web scraping framework written in coffeescript",
+  "contributors": [ 
+    {
+      "name": "Carlos Arrastia",
+      "email": "carlos.arrastia@gmail.com"
+    } 
+  ],
+  "repository" :{ 
+    "type" : "git",
+    "url" : "https://github.com/carrasti/extrae.git"
+  },
+  "dependencies" : {
+    "colors"     :  "*",
+    "backbone"   :  "1.1.x",
+    "underscore" :  "1.6.x",
+    "express"    :  "3.5.x",
+    "request"    :  "2.34.x",
+    "cheerio"    :  "0.13.x"
+  },
+  "devDependencies": {
+    "coffee-script": "1.7.x",
+    "codo": "2.0.x"
+  },
+  "main":           "lib/extrae",
+  "scripts": {
+    "build":        "coffee --bare --compile --output lib/extrae src/extrae/*.coffee",
+    "prepublish":   "coffee --bare --compile --output lib/extrae src/extrae/*.coffee",
+    "postpublish":  "rm -rf html man7 lib"
+  },
+  "analyze": false,
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.10"
+  }
+}
