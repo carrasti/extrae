@@ -1,7 +1,7 @@
 {
   "name": "extrae",
   "preferGlobal": true,
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Carlos Arrastia <carlos.arrastia@gmail.com>",
   "description": "A web scraping framework written in coffeescript",
   "homepage": "https://github.com/carrasti/extrae",
@@ -35,7 +35,7 @@
     "coffee-script": "1.7.x",
     "codo": "2.0.x"
   },
-  "main": "lib/extrae/inndex.js",
+  "main": "src/extrae/index",
   "scripts": {
     "build": "coffee --bare --compile --output lib/extrae src/extrae/*.coffee",
     "prepublish": "coffee --bare --compile --output lib/extrae src/extrae/*.coffee",
