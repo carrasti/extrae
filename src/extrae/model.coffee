@@ -45,7 +45,7 @@ class Model extends Backbone.Model
     ###
     Overrides the default toJSON method serializing also nested models and collections
 
-    @return [String] JSON serialized data for the model attributes
+    @return [Object] Object serialized as json (no functions, etc)
     ###
     toJSON: ()->
         o = super()
@@ -62,7 +62,7 @@ class Model extends Backbone.Model
       passed to extractors so it is possible to access some global
       properties contained on it
 
-    @param [Object] root a [cheerio](http://matthewmueller.github.io/cheerio/)
+    @param [Object] $root a [cheerio](http://matthewmueller.github.io/cheerio/)
       HTML selector with the base element to be used for parsing data
       and locating nodes to extract data from.
 
@@ -70,21 +70,21 @@ class Model extends Backbone.Model
 
     @return [Model] this
     ###
-    extractData: (scraper, root, options) ->
+    extractData: (scraper, $root, options) ->
 
         # iterate over the field definitions
         for fieldKey, fieldItem of @fieldDefinitions
 
             # if there is a extractrule for the field key apply the rule
             if @extractRules[fieldKey]?
-                @set fieldKey, (@extractRules[fieldKey].process root, options, @)
+                @set fieldKey, (@extractRules[fieldKey].process $root, options, @)
 
             # if the field definition is for model or collection create the
             # corresponding class instance
             else if fieldItem.type in ['collection', 'model']
-                selectedItems = if fieldItem.selector? then root.find fieldItem.selector else root
+                $selectedItems = if fieldItem.selector? then $root.find fieldItem.selector else $root
                 subitem = new fieldItem.klass()
-                subitem.extractData scraper, selectedItems, options
+                subitem.extractData scraper, $selectedItems, options
                 @set fieldKey, subitem
 
             # in any other case just set the key to the same value it had or null
