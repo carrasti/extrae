@@ -12,22 +12,22 @@ provide jQuery-like node selecting API over HTML and
 
 You have some HTML you want to extract contacts from. The HTML looks like this:
 
-    ```coffee-script
-    html = """
-    <html><body>
-        <ul id="movies">
-            <li class="movie">
-                <span class="title">The Terminator</span>
-                <span class="year">1984</span>
-            </li>
-            <li class="contact">
-                <span class="title">Terminator 2: Judgment Day</span>
-                <span class="year">1991</span>
-            </li>
-        </ul>
-    </body></html>
-    """
-    ```
+```coffee-script
+html = """
+<html><body>
+    <ul id="movies">
+        <li class="movie">
+            <span class="title">The Terminator</span>
+            <span class="year">1984</span>
+        </li>
+        <li class="contact">
+            <span class="title">Terminator 2: Judgment Day</span>
+            <span class="year">1991</span>
+        </li>
+    </ul>
+</body></html>
+"""
+```
 
 Let's extract all the movies and for each movie their title and year. The
 collection of nodes for each movie can be extracted with the string selector
@@ -36,14 +36,14 @@ title via the selector '.title' and year with '.year'.
 
 You can define a **model** for each movie and the attributes to extract:
 
-    ```coffee-script
-    Extrae = require "extrae"
+```coffee-script
+Extrae = require "extrae"
 
-    class MovieModel extends Extrae.Model
-    MovieModel.fieldDefinitions =
-        'title' : new Extrae.Fields.StringField 'title'
-        'year'  : new Extrae.Fields.NumberField 'year'
-    ```
+class MovieModel extends Extrae.Model
+MovieModel.fieldDefinitions =
+    'title' : new Extrae.Fields.StringField 'title'
+    'year'  : new Extrae.Fields.NumberField 'year'
+```
 
 And then the **rules** to extract every field. Rules consist on a
 [string selector](https://github.com/MatthewMueller/cheerio#selectors) and a
@@ -51,50 +51,50 @@ function to extract the data. Extractor functions receive as parameter the
 element(s) matched by the selector so you can use the cheerio API to extract
 data.
 
-    ```coffee-script
-    MovieModel.extractRules =
-        'title' : new Extrae.ExtractRule '.title',
-                                         ($) ->
-                                            $.text()
-        'year'  : new Extrae.ExtractRule '.name',
-                                            paseInt $.text(), 10
-    ```
+```coffee-script
+MovieModel.extractRules =
+    'title' : new Extrae.ExtractRule '.title',
+                                     ($) ->
+                                        $.text()
+    'year'  : new Extrae.ExtractRule '.name',
+                                        paseInt $.text(), 10
+```
 
 Next define a **collection** for the contacts and set as its model the
 `ContactModel` written in the previous step:
 
-    ```coffee-script
-    class MovieCollection extends Extrae.Collection
-        model = MovieModel
-    ```
+```coffee-script
+class MovieCollection extends Extrae.Collection
+    model = MovieModel
+```
 
 All ready in our data layer, let's create a **scraper** to extract the data:
 
-    ```coffee-script
-    scraper = new Extrae.Scraper \
-                    # base selector for the movie items for the collection
-                    '#movies .movie',
-                    # model or collection to extract the data and be returned
-                    MovieCollection
-    ```
+```coffee-script
+scraper = new Extrae.Scraper \
+                # base selector for the movie items for the collection
+                '#movies .movie',
+                # model or collection to extract the data and be returned
+                MovieCollection
+```
 
 Now let's work the magic:
 
-    ```coffee-script
+```coffee-script
 
-    # scraper.scrape will return a ContactCollection instance with the
-    # extracted data
-    extractedCollection = scraper.scrape html
+# scraper.scrape will return a ContactCollection instance with the
+# extracted data
+extractedCollection = scraper.scrape html
 
-    # using Backbone.js toJSON method for the collection we can get all the data
-    # as a POJO (Plain Old Javascript Object)
-    extractedCollection.toJSON()
+# using Backbone.js toJSON method for the collection we can get all the data
+# as a POJO (Plain Old Javascript Object)
+extractedCollection.toJSON()
 
-    # [
-    #     { "title" : "The Terminator", "year" : 1984 },
-    #     { "title" : "Terminator 2: Judgment Day", "year" : 1991 }
-    # ]
+# [
+#     { "title" : "The Terminator", "year" : 1984 },
+#     { "title" : "Terminator 2: Judgment Day", "year" : 1991 }
+# ]
 
-    # Use the data extracted wisely.
-    ```
+# Use the data extracted wisely.
+```
 
