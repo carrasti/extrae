@@ -3,14 +3,15 @@
 Extrae is a framework to allow you easily extract data from web pages in a
 structured manner.
 
-Extrae uses [Backbone.js](http://backbonejs.org/) to define classes and models
-from the data extracted, [cheerio](https://github.com/MatthewMueller/cheerio) to
-provide jQuery-like node selecting API over HTML and
-[request](https://github.com/mikeal/request) to fetch HTML from the Internet.
+It is written in **CoffeeScript** and uses [Backbone.js](http://backbonejs.org/)
+to define classes and models for the data extracted,
+[cheerio](https://github.com/MatthewMueller/cheerio) to provide jQuery-like node
+selecting API over HTML and [request](https://github.com/mikeal/request) to
+fetch HTML from the Internet.
 
 ## A simple example ##
 
-You have some HTML you want to extract contacts from. The HTML looks like this:
+You have some HTML you want to extract movies from. The HTML looks like this:
 
 ```coffee-script
 html = """
@@ -20,7 +21,7 @@ html = """
             <span class="title">The Terminator</span>
             <span class="year">1984</span>
         </li>
-        <li class="contact">
+        <li class="movie">
             <span class="title">Terminator 2: Judgment Day</span>
             <span class="year">1991</span>
         </li>
@@ -32,7 +33,7 @@ html = """
 Let's extract all the movies and for each movie their title and year. The
 collection of nodes for each movie can be extracted with the string selector
 `#movies .movie`, then each element matched will be used as base to find the
-title via the selector '.title' and year with '.year'.
+title via the selector `.title` and year with `.year`.
 
 You can define a **model** for each movie and the attributes to extract:
 
@@ -60,8 +61,8 @@ MovieModel.extractRules =
                                         paseInt $.text(), 10
 ```
 
-Next define a **collection** for the contacts and set as its model the
-`ContactModel` written in the previous step:
+Next define a **collection** for the movies and set as its model the
+`MovieModel` written in the previous step:
 
 ```coffee-script
 class MovieCollection extends Extrae.Collection
@@ -82,7 +83,7 @@ Now let's work the magic:
 
 ```coffee-script
 
-# scraper.scrape will return a ContactCollection instance with the
+# scraper.scrape will return a MovieCollection instance with the
 # extracted data
 extractedCollection = scraper.scrape html
 
@@ -98,3 +99,20 @@ extractedCollection.toJSON()
 # Use the data extracted wisely.
 ```
 
+If the resource containing the HTML to parse is anywhere on the Internet, use
+the `UrlScraper` class. The constructor is slightly different and results are
+provided in a callback as fetching the data is asynchronous. See the example:
+
+```coffee-script
+scraper = new Extrae.UrlScraper \
+                'http://example.com/movies.html',  # url for the resource
+                '#movies .movie',  # base selector for the items
+                MovieCollection  # model or collection for the results
+
+# the UrlScrapper is asynchronous so data is handled in a callback
+callback = (err, response, collection)->
+    console.log collection.toJSON()
+
+# scrape!
+scraper.scrape callback
+```
