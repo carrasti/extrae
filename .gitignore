@@ -8,10 +8,10 @@ lib-cov
 *.gz
 
 lib/
-doc/
+docs/
 coverage.html
 /*.coffee
-
+test/*.js
 pids
 logs
 results
