@@ -9,6 +9,11 @@ to define classes and models for the data extracted,
 selecting API over HTML and [request](https://github.com/mikeal/request) to
 fetch HTML from the Internet.
 
+Install from `npm`:
+
+    npm install extrae
+
+
 ## A simple example ##
 
 You have some HTML you want to extract movies from. The HTML looks like this:
