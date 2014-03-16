@@ -23,7 +23,7 @@
     "url": "git://github.com/carrasti/extrae.git"
   },
   "bugs": {
-    "url": "https://github.com/carrasti/extrae"
+    "url": "https://github.com/carrasti/extrae/issues"
   },
   "dependencies": {
     "backbone": "1.1.x",
@@ -33,17 +33,28 @@
   },
   "devDependencies": {
     "coffee-script": "1.7.x",
-    "codo": "2.0.x"
+    "codo": "2.0.x",
+    "mocha": "1.18.x",
+    "chai": "1.9.x",
+    "blanket": "1.1.x"
   },
   "main": "src/extrae/index",
   "scripts": {
     "build": "coffee --bare --compile --output lib/extrae src/extrae/*.coffee",
     "prepublish": "coffee --bare --compile --output lib/extrae src/extrae/*.coffee",
-    "postpublish": "rm -rf html man7 lib"
+    "postpublish": "rm -rf html man7 lib",
+    "test": "make test"
+
   },
   "analyze": false,
   "license": "MIT",
   "engines": {
     "node": ">=0.10"
+  },
+  "config": {
+    "blanket": {
+      "pattern": "src/extrae",
+      "loader": "./node-loaders/coffee-script"
+    }
   }
 }
