@@ -9,6 +9,8 @@ lib-cov
 
 lib/
 doc/
+coverage.html
+/*.coffee
 
 pids
 logs

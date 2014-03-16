@@ -33,18 +33,17 @@
   },
   "devDependencies": {
     "coffee-script": "1.7.x",
-    "codo": "2.0.x",
+    "codo": "~2.0.6",
     "mocha": "1.18.x",
     "chai": "1.9.x",
     "blanket": "1.1.x"
   },
-  "main": "src/extrae/index",
+  "main": "src/index",
   "scripts": {
-    "build": "coffee --bare --compile --output lib/extrae src/extrae/*.coffee",
-    "prepublish": "coffee --bare --compile --output lib/extrae src/extrae/*.coffee",
+    "build": "coffee --bare --compile --output lib src/*.coffee",
+    "prepublish": "coffee --bare --compile --output lib src/*.coffee",
     "postpublish": "rm -rf html man7 lib",
     "test": "make test"
-
   },
   "analyze": false,
   "license": "MIT",
@@ -53,7 +52,7 @@
   },
   "config": {
     "blanket": {
-      "pattern": "src/extrae",
+      "pattern": "src",
       "loader": "./node-loaders/coffee-script"
     }
   }

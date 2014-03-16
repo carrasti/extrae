@@ -1,5 +1,5 @@
 chai = require "chai"
-Extrae = require "../src/extrae"
+Extrae = require "../src"
 should = chai.should()
 
 describe 'Model', ()->

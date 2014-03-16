@@ -1,4 +1,4 @@
-SRC = src/extrae/
+SRC = src
 TESTS = test/*.coffee
 REPORTER = dot
 
