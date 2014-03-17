@@ -46,7 +46,8 @@ You can define a **model** for each movie and the attributes to extract:
 Extrae = require "extrae"
 
 class MovieModel extends Extrae.Model
-MovieModel.fieldDefinitions =
+# add field definitions to the MovieModel prototype
+MovieModel::fieldDefinitions =
     'title' : new Extrae.Fields.StringField 'title'
     'year'  : new Extrae.Fields.NumberField 'year'
 ```
@@ -58,7 +59,8 @@ element(s) matched by the selector so you can use the cheerio API to extract
 data.
 
 ```coffee-script
-MovieModel.extractRules =
+# add rules to the MovieModel prototype
+MovieModel::extractRules =
     'title' : new Extrae.ExtractRule '.title',
                                      ($) ->
                                         $.text()
