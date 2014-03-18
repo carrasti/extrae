@@ -47,10 +47,9 @@ Extrae = require "extrae"
 
 class MovieModel extends Extrae.Model
 # add field definitions to the MovieModel prototype
-MovieModel.setFieldDefinitionsFromList [
-    new Extrae.Fields.StringField 'title'
-    new Extrae.Fields.NumberField 'year'
-]
+MovieModel
+    .addFieldDefinition 'title', new Extrae.Fields.StringField
+    .addFieldDefinition 'year',  new Extrae.Fields.NumberField
 ```
 
 And then the **rules** to extract every field. Rules consist on a
@@ -61,14 +60,9 @@ data.
 
 ```coffee-script
 # add rules to the MovieModel prototype
-MovieModel.setExtractRulesMap {
-    'title' : new Extrae.ExtractRule '.title',
-                                     ($) ->
-                                        $.text()
-    'year'  : new Extrae.ExtractRule '.name',
-                                     ($) ->
-                                        parseInt $.text(), 10
-}
+MovieModel
+    .addExtractRule 'title', new Extrae.ExtractRule '.title', ($) -> $.text()
+    .addExtractRule 'year' , new Extrae.ExtractRule '.year', ($) ->  parseInt $.text(), 10
 ```
 
 Next define a **collection** for the movies and set as its model the
