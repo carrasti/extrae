@@ -1,37 +1,32 @@
 Extrae = require "../src"
 
 class MovieModel extends Extrae.Model
-MovieModel.setFieldDefinitionsFromList [
-        new Extrae.Fields.StringField 'title'
-        new Extrae.Fields.NumberField 'year'
-]
-MovieModel.setExtractRulesMap {
-        'title' : new Extrae.ExtractRule '.title', ($) -> $.text()
-        'year'  : new Extrae.ExtractRule '.year', ($) ->  parseInt $.text(), 10
-}
+MovieModel
+    .addFieldDefinition 'title', new Extrae.Fields.StringField
+    .addFieldDefinition 'year',  new Extrae.Fields.NumberField
+    .addExtractRule 'title', new Extrae.ExtractRule '.title', ($) -> $.text()
+    .addExtractRule 'year' , new Extrae.ExtractRule '.year', ($) ->  parseInt $.text(), 10
+
 
 class PersonModel extends Extrae.Model
-PersonModel.setFieldDefinitionsFromList [
-    new Extrae.Fields.StringField 'name'
-]
-PersonModel.setExtractRulesMap {
-      'name' : new Extrae.ExtractRule '.name', ($) -> $.text()
-}
+PersonModel
+    .addFieldDefinition 'name', new Extrae.Fields.StringField
+    .addExtractRule 'name', (new Extrae.ExtractRule '.name', ($) -> $.text())
 
 class PersonCollection extends Extrae.Collection
     model: PersonModel
 
 class MovieWithNestedActors extends MovieModel
-MovieWithNestedActors.setFieldDefinitionsFromList [
-    new Extrae.Fields.CollectionField 'actors',
-                                      '.actors .actor',
-                                      PersonCollection
-]
+MovieWithNestedActors.addFieldDefinition \
+                        'actors',
+                        new Extrae.Fields.CollectionField '.actors .actor',
+                        PersonCollection
 
 class MovieWithNestedDirector extends MovieModel
-MovieWithNestedDirector.setFieldDefinitionsFromList [
-    new Extrae.Fields.ModelField 'director', '.director', PersonModel
-]
+MovieWithNestedDirector.addFieldDefinition \
+                        'director',
+                        new Extrae.Fields.ModelField '.director',
+                        PersonModel
 
 movieData = [{
   title: 'The Terminator'
@@ -78,4 +73,3 @@ exports.MovieWithNestedActors = MovieWithNestedActors
 exports.MovieWithNestedDirector = MovieWithNestedDirector
 exports.MOVIE_DATA = movieData
 exports.HTML = html
-

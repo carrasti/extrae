@@ -15,9 +15,8 @@ describe 'Model', ()->
 
     describe '#setFieldDefinitionsFromList', ()->
         class ExtendedMovieModel extends MovieModel
-        ExtendedMovieModel.setFieldDefinitionsFromList [
-          new Extrae.Fields.NumberField 'runtime'
-        ]
+        ExtendedMovieModel
+          .addFieldDefinition 'runtime', new Extrae.Fields.NumberField
 
         it 'should keep the superclass prototype methods unmodified', ()->
           Object.keys(MovieModel::fieldDefinitions).length.should.equal 2
@@ -33,9 +32,8 @@ describe 'Model', ()->
 
     describe '#setExtractRulesMap', ()->
         class ExtendedMovieModel extends MovieModel
-        ExtendedMovieModel.setExtractRulesMap {
-          'runtime': new Extrae.ExtractRule null, null
-        }
+        ExtendedMovieModel
+            .addExtractRule 'runtime', new Extrae.ExtractRule null, null
 
         it 'should keep the superclass prototype methods unmodified', ()->
           Object.keys(MovieModel::extractRules).length.should.equal 2
@@ -117,9 +115,9 @@ describe 'Model', ()->
 
         it 'should not extract anything if no ExtractRule for field', ()->
             class ExtendedMovieModel extends MovieModel
-            ExtendedMovieModel.setFieldDefinitionsFromList [
-              new Extrae.Fields.Field 'norulefield'
-            ]
+            ExtendedMovieModel
+              .addFieldDefinition 'norulefield', new Extrae.Fields.Field
+
             $rootEl = (singleMovieScraper.$ singleMovieScraper.baseSelector).first()
             model = new ExtendedMovieModel {}
             model.extractData singleMovieScraper, $rootEl, null

@@ -15,32 +15,62 @@ class Model extends Backbone.Model
     extractRules: {}
 
     ###
-    Sets field definitions to the field definition map from a list of {Field}
-      instances. It preserves field definitions made in superclasses.
+    Adds several field definition to the field definition map preserving fields
+    defined in superclasses. Every field definition is a 2 element array with
+    `[ fieldName, Field instance ]`. Chainable.
 
-    @param [Array] fieldDefinitions list of {Field} instances
-    ####
-    @setFieldDefinitionsFromList: (fieldDefinitions) ->
+    @param [Array] fieldDefinitions variable number of 2 element arrays
+      `[ fieldName, Field instance ]`
+    ###
+    @addFieldDefinitions: (fieldDefinitions...) ->
         ThisClass = @::constructor
-        # create shallow copy of the original value
-        ThisClass::fieldDefinitions = u.clone ThisClass::fieldDefinitions
-        for it in fieldDefinitions
-            ThisClass::fieldDefinitions[it.name] = it
-        @
+        for fieldDefinition in fieldDefinitions
+            ThisClass.addFieldDefinition fieldDefinition...
+        ThisClass
 
     ###
-    Sets extractrules to the field definition map preserving rules defined in
-      superclasses.
+    Adds a field definition to the field definition map preserving fields defined
+    in superclasses. Chainable.
 
-    @param [Object] extractRulesMap map with attribute name for keys and {ExtractRule} object
-      as value
+    @param [String] fieldName name for the field
+    @param [Field] field a Field instance
     ###
-    @setExtractRulesMap : (extractRulesMap) ->
+    @addFieldDefinition: (fieldName, field) ->
         ThisClass = @::constructor
-        # extends the extract rules creating shallow copy every time
-        ThisClass::extractRules = u.extend {}, (ThisClass::extractRules || {}), extractRulesMap
-        @
+        if ThisClass::fieldDefinitions == ThisClass.__super__.constructor::fieldDefinitions
+            ThisClass::fieldDefinitions = u.clone ThisClass::fieldDefinitions
 
+        ThisClass::fieldDefinitions[fieldName] = field
+        ThisClass
+
+    ###
+    Adds several extract rules to the extract rules map preserving rules
+    defined in superclasses. Every rule definition is a 2 element array with
+    `[ fieldName, ExtractRule instance ]`. Chainable.
+
+    @param [Array] extractRules variable number of 2 element arrays
+      `[ fieldName, ExtractRule instance ]`
+    ###
+    @addExtractRules: (extractRules...) ->
+        ThisClass = @::constructor
+        for extractRule in extractRules
+            ThisClass.addExtractRule extractRule...
+        ThisClass
+
+    ###
+    Adds a extract rule to the extract rule map preserving rules defined
+    in superclasses. Chainable.
+
+    @param [String] fieldName name for the field
+    @param [ExtractRule] rule a ExtractRule instance
+    ###
+    @addExtractRule: (fieldName, rule) ->
+        ThisClass = @::constructor
+        if ThisClass::extractRules == ThisClass.__super__.constructor::extractRules
+            ThisClass::extractRules = u.clone ThisClass::extractRules
+
+        ThisClass::extractRules[fieldName] = rule
+        ThisClass
 
     ###
     Overrides the default toJSON method serializing also nested models and collections
