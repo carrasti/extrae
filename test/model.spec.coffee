@@ -13,7 +13,7 @@ html = h.HTML
 
 describe 'Model', ()->
 
-    describe '#setFieldDefinitionsFromList', ()->
+    describe '#addFieldDefinition', ()->
         class ExtendedMovieModel extends MovieModel
         ExtendedMovieModel
           .addFieldDefinition 'runtime', new Extrae.Fields.NumberField
@@ -30,7 +30,29 @@ describe 'Model', ()->
           ExtendedMovieModel::fieldDefinitions.should.have.property 'runtime'
           MovieModel::fieldDefinitions.should.not.have.property 'runtime'
 
-    describe '#setExtractRulesMap', ()->
+    describe '#addFieldDefinitions', ()->
+        class ExtendedMovieModel extends MovieModel
+        ExtendedMovieModel
+          .addFieldDefinitions \
+            [ 'runtime', new Extrae.Fields.NumberField ],
+            [ 'director', new Extrae.Fields.NumberField ]
+
+        it 'should keep the superclass prototype methods unmodified', ()->
+          Object.keys(MovieModel::fieldDefinitions).length.should.equal 2
+          Object.keys(ExtendedMovieModel::fieldDefinitions)\
+                                                   .length.should.equal 4
+          ExtendedMovieModel::fieldDefinitions.should.not
+                                  .equal MovieModel::fieldDefinitions
+          ExtendedMovieModel::fieldDefinitions.should.not
+                                  .deep.equal MovieModel::fieldDefinitions
+
+        it 'should add all fields to subclass', ()->
+          ExtendedMovieModel::fieldDefinitions.should.have.property 'runtime'
+          MovieModel::fieldDefinitions.should.not.have.property 'runtime'
+          ExtendedMovieModel::fieldDefinitions.should.have.property 'director'
+          MovieModel::fieldDefinitions.should.not.have.property 'director'
+
+    describe '#addExtractRule', ()->
         class ExtendedMovieModel extends MovieModel
         ExtendedMovieModel
             .addExtractRule 'runtime', new Extrae.ExtractRule null, null
@@ -45,6 +67,27 @@ describe 'Model', ()->
         it 'should add extract rule only to subclass', ()->
           ExtendedMovieModel::extractRules.should.have.property 'runtime'
           MovieModel::extractRules.should.not.have.property 'runtime'
+
+    describe '#addExtractRules', ()->
+        class ExtendedMovieModel extends MovieModel
+        ExtendedMovieModel
+          .addExtractRules \
+            [ 'runtime', new Extrae.ExtractRule null, null ],
+            [ 'director', new Extrae.ExtractRule null, null ]
+
+        it 'should keep the superclass prototype methods unmodified', ()->
+          Object.keys(MovieModel::extractRules).length.should.equal 2
+          Object.keys(ExtendedMovieModel::extractRules).length.should.equal 4
+          ExtendedMovieModel::extractRules.should.not
+                                  .equal MovieModel::extractRules
+          ExtendedMovieModel::extractRules.should.not
+                                  .deep.equal MovieModel::extractRules
+
+        it 'should add all extract rules to subclass', ()->
+          ExtendedMovieModel::extractRules.should.have.property 'runtime'
+          MovieModel::extractRules.should.not.have.property 'runtime'
+          ExtendedMovieModel::extractRules.should.have.property 'director'
+          MovieModel::extractRules.should.not.have.property 'director'
 
     describe '#toJSON()', ()->
         movie1 = new MovieModel {
