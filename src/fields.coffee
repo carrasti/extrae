@@ -5,6 +5,7 @@ Base field class which represents a field for a model. This is subclassed into
 class Field
     # method property indicating the field type
     type: 'field'
+
     ###
     @param [Object] opts optional object with options
     ###
@@ -42,7 +43,7 @@ class CollectionField extends Field
     @param [Object] opts optional object with options
     ###
     constructor: (@selector, @klass = null, @opts = null) ->
-        if not klass
+        if not @klass
             throw new Error "Pass the class name of the collection as klass argument"
 
 
@@ -60,7 +61,7 @@ class ModelField extends Field
     @param [Object] opts optional object with options
     ###
     constructor: (@selector, @klass = null, @opts = null) ->
-        if not klass
+        if not @klass
             throw new Error "Pass the class name of the model as klass argument"
 
 module.exports =

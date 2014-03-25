@@ -5,7 +5,7 @@ Processors = require './processors'
 Fields = require './fields'
 ExtractRule = require './extract_rule'
 
-Extrae = 
+Extrae =
 	Model: Model
 	Collection: Collection
 	Scraper: Scraper.Scraper
