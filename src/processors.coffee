@@ -26,7 +26,7 @@ class Processors
       Processors.Replacements.REMOVE_NEWLINES
       Processors.Replacements.REMOVE_DOUBLE_SPACES
       Processors.Replacements.REMOVE_UNUSED_SPACES_LEFT,
-        Processors.Replacements.REMOVE_UNUSED_SPACES_RIGHT
+      Processors.Replacements.REMOVE_UNUSED_SPACES_RIGHT
     ]
 
   # string processors are functions applied to a string
