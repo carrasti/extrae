@@ -13,6 +13,7 @@ Install from `npm`:
 
     npm install extrae
 
+[![Build Status](https://travis-ci.org/carrasti/extrae.svg?branch=master)](https://travis-ci.org/carrasti/extrae)
 
 ## A simple example ##
 
