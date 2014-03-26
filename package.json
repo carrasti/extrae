@@ -36,7 +36,8 @@
     "codo": "~2.0.6",
     "mocha": "1.18.x",
     "chai": "1.9.x",
-    "blanket": "1.1.x"
+    "blanket": "1.1.x",
+    "coffeelint": "~1.1.0"
   },
   "main": "lib/index.js",
   "scripts": {

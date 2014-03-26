@@ -10,6 +10,12 @@ all: build
 init:
 	npm install
 
+lint:
+	@NODE_ENV=lint coffeelint $(SRC)/*.coffee
+
+lint-tests:
+	@NODE_ENV=lint coffeelint $(TESTS)
+
 test:
 	@NODE_ENV=test mocha \
 		--compilers coffee:coffee-script/register \
@@ -41,11 +47,12 @@ build:
 	coffee --bare --compile --output lib src/ && \
 	coffee --bare --compile test/
 
-dist: clean init docs build test
+dist: clean init docs build lint test
 
 publish: dist
 	npm publish
 
 
 
-.PHONY: test-cov test docs init clean-docs clean build dist publish
+.PHONY: test-cov test docs init clean-docs clean build dist publish \
+		lint lint-tests
