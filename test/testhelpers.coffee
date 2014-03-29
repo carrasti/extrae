@@ -8,6 +8,8 @@ MovieModel
   .addExtractRule 'year' , new Extrae.ExtractRule '.year', ($) -> parseInt \
                                                                     $.text(), 10
 
+class MovieCollection extends Extrae.Collection
+  model: MovieModel
 
 class PersonModel extends Extrae.Model
 PersonModel
@@ -66,11 +68,11 @@ html = """
     </ul>
 </body></html>
 """
-
 exports.MovieModel = MovieModel
 exports.PersonModel = PersonModel
 exports.PersonCollection = PersonCollection
 exports.MovieWithNestedActors = MovieWithNestedActors
 exports.MovieWithNestedDirector = MovieWithNestedDirector
+exports.MovieCollection = MovieCollection
 exports.MOVIE_DATA = movieData
 exports.HTML = html

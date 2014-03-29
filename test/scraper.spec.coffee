@@ -3,8 +3,30 @@ Extrae = require "../src"
 should = chai.should()
 h = require "./testhelpers"
 cheerio = require "cheerio"
+httpModule = require 'http'
 
 describe 'Scraper', ()->
+  server = null
+  serverUrl = 'http://127.0.0.1:9875/'
+
+  # server to test scraper with url
+  before ()->
+    server = httpModule.createServer (req, res) ->
+      if req.url == '/'
+        res.writeHead 200, {'Content-Type': 'text/html'}
+        res.end h.HTML
+      else if req.url == '/error/'
+        res.writeHead 500, {'Content-Type': 'text/plain'}
+        res.end 'Error'
+      else
+        res.writeHead 500, {'Content-Type': 'text/plain'}
+        res.end 'Not Found'
+
+    server.listen 9875
+
+  after ()->
+    server.close()
+
   class TestModel extends Extrae.Model
   TestModel
     .addFieldDefinition 'name', new Extrae.Fields.StringField
@@ -55,7 +77,7 @@ describe 'Scraper', ()->
   describe '#extractData', ()->
     it 'should throw exception if no html parsed', () ->
       fn = ()->
-        scraper.extractData()
+        testScraper.extractData()
       (fn).should.throw(Error)
     it 'should return an instance of @returnClass if parsed', () ->
       testScraper.loadHtml extractHtml
@@ -67,3 +89,30 @@ describe 'Scraper', ()->
       ret = testScraper.scrape extractHtml
       ret.should.be.an.instanceof TestModel
       (ret.get 'name').should.equal 'Alice'
+
+  describe 'UrlScraper', (done)->
+    urlScraper = new Extrae.UrlScraper \
+                   serverUrl,
+                   '#movies .movie',  # base selector for the items
+                   h.MovieCollection  # collection for the results
+
+    it 'should scrape the url if exists', (done) ->
+      urlScraper.scrape (err, response, collection)->
+        (!err).should.equal true
+        collection.should.be.an.instanceof h.MovieCollection
+        collection.length.should.equal 2
+        m = collection.at(0)
+        (m.get 'title').should.equal h.MOVIE_DATA[0].title
+        done()
+
+    it 'should throw error if status code is not for success', (done) ->
+      urlScraper.scrape ((err, response, collection, errDescription)->
+        (!!err).should.equal true
+        done())
+        , serverUrl + 'error/'
+    it 'should throw error if there is any request error', (done) ->
+      # this will fail as unknown protocol
+      urlScraper.scrape ((err, response, collection, errDescription)->
+        (!!err).should.equal true
+        done())
+        , 'xyz://example.com'
