@@ -118,10 +118,10 @@ class Scraper
   @return [Mixed] {Model} or {Collection} instance with the data extracted
   ###
   scrape: (html, options = null) ->
-    content = @.processHtml html
-    @.applyParseMaps content
-    @.loadHtml content
-    @.extractData options
+    content = @processHtml html
+    @applyParseMaps content
+    @loadHtml content
+    @extractData options
 
 ###
 Scraper which will fetch via an HTTP request the HTML data to extract the data
@@ -138,25 +138,41 @@ class UrlScraper extends Scraper
   {Scraper#scrape} method over the returned HTML
 
   @param [Function] callback callback to perform when parsing of the data
-    occurs. The signature for this callback is `function(err, response, data)`
-    having `err` a value if some error occured, `response` the response as
-    returned by the `request.get` call and `data` containing the instance
-    to the {#returnClass} with data extracted or a object with error
-    description.
+    occurs. The signature for this callback is
+    `function(err, response, data, errorDescription)` having `err` a value if
+    some error occured, `response` the response as returned by the
+    `request.get` call and `data` containing the instance to the {#returnClass}
+    with data extracted or null if error, `errorDescription` is an object with
+    more details on what the error is about.
   @param [String] url optional url which if passed will override the {#url}
     set for the class.
   @param [Object] options optional set of options to be passed when extracting
     data.
   ###
   scrape: (callback, url = null, options = null) ->
-    url = if url then url else @.url
-    request.get url, (error, response, body) ->
+    url = if url then url else @url
+    request.get url, (error, response, body) =>
+      # not necessary but linter complains of fat arrow. It will fail otherwise
+      # as we are calling `super` a bit lower.
+      me = @
+
+      # error in request call
       if error
-        callback error, response, {'error':'An error has occurred'}
+        callback error,
+                 response,
+                 null,
+                 {'error':'An error has occurred'}
+      # invalid status code
+      else if response.statusCode < 200 or response.statusCode >= 300
+        callback 'Status code is #{response.statusCode}',
+                 response,
+                 null,
+                 {'error':'Invalid status code returned'}
+      # all good, parse the data
+      else
+        o = super body, options
 
-      o = super body, options
-
-      callback null, response, o
+        callback null, response, o
 
 module.exports.Scraper = Scraper
 module.exports.UrlScraper = UrlScraper
