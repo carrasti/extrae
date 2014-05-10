@@ -4,6 +4,8 @@ Scraper = require './scraper'
 Processors = require './processors'
 Fields = require './fields'
 ExtractRule = require './extract_rule'
+Server = require './server'
+SiteAPI = require './sitea_api'
 
 Extrae =
   Model: Model
@@ -14,5 +16,8 @@ Extrae =
   Processors: Processors
   Fields: Fields
   ExtractRule: ExtractRule
+  Server: Server.Server
+  SiteAPI: Server.SiteAPI
+
 
 module.exports = Extrae
