@@ -29,7 +29,8 @@
     "backbone": "1.1.x",
     "underscore": "1.6.x",
     "request": "2.34.x",
-    "cheerio": "0.13.x"
+    "cheerio": "0.13.x",
+    "express": "4.1.x"
   },
   "devDependencies": {
     "coffee-script": "1.7.x",
