@@ -5,7 +5,7 @@ Processors = require './processors'
 Fields = require './fields'
 ExtractRule = require './extract_rule'
 Server = require './server'
-SiteAPI = require './sitea_api'
+SiteAPI = require './site_api'
 
 Extrae =
   Model: Model
@@ -16,8 +16,7 @@ Extrae =
   Processors: Processors
   Fields: Fields
   ExtractRule: ExtractRule
-  Server: Server.Server
-  SiteAPI: Server.SiteAPI
-
+  Server: Server
+  SiteAPI: SiteAPI
 
 module.exports = Extrae

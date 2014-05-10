@@ -1,8 +1,7 @@
 
 class SiteAPI
-  routes: {}
-
   constructor: (@id, @urlPortion, @scraperRequestParams = {}) ->
+    @routes = {}
 
   addView: (viewName, urlGenerator, scraper, scraperOptions = {})->
     @routes[viewName] =
@@ -12,4 +11,4 @@ class SiteAPI
       scraperOptions: scraperOptions
       scraperRequestParams: @scraperRequestParams
 
-exports.SiteAPI = SiteAPI
+module.exports = SiteAPI

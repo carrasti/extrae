@@ -3,35 +3,18 @@ http = require 'http'
 u = require 'underscore'
 
 
-
-class SiteAPI
-  routes: {}
-
-  constructor: (@id, @urlPortion, @scraperRequestParams = {}) ->
-
-  addView: (viewName, urlGenerator, scraper, scraperOptions = {})->
-    @routes[viewName] =
-      name: viewName
-      urlGenerator: urlGenerator
-      scraper: scraper
-      scraperOptions: scraperOptions
-      scraperRequestParams: @scraperRequestParams
-
-
-
-
 class Server
-  siteApis: {}
   port: 3000
   constructor: (@express=null, @port=3000) ->
     @express = @express or xpress()
+    @siteApis = {}
 
   serve: (serverOptions=null, port=null) ->
     port = port or @port
     args = [@express]
     me = @
     @express.get '/', (req, res) ->
-      res.set('Content-Type', 'text/plain');
+      res.set('Content-Type', 'text/plain')
       ret = ''
       for siteApiId, siteApi of me.siteApis
         for route in siteApi[1]
@@ -56,13 +39,12 @@ class Server
     (req, res) =>
       scraper = route.scraper
 
-      console.log('calling the scraper!')
       scraper.scrape \
           @apiResponseCallback(req, res),
           route.urlGenerator(req.query),
           {
-            request: req,
-            express: @
+          request: req,
+          express: @
           }
 
   apiResponseCallback: (req, res) ->
@@ -75,5 +57,4 @@ class Server
         res.send data.toJSON()
 
 
-module.exports.Server = Server
-module.exports.SiteAPI = SiteAPI
+module.exports = Server
