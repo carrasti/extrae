@@ -1,3 +1,4 @@
+u = require 'underscore'
 ###
 Defines in a structured manner the way to define different views to extract
 data from a site. This is used by the {Server} instances to define routes to
@@ -7,7 +8,7 @@ views to scrape data.
 
   Extrae = require 'extrae'
 
-  # contains Extrae.Scraper subclasses
+  # contains Extrae.Scraper instances
   MovieScrapers = require './moviescrapers'
 
   movieSite = new Extrae.SiteAPI \
@@ -30,8 +31,8 @@ views to scrape data.
                     url = 'http://www.example.com/search/?q=' + params.s
                     url
                 ,
-                # the scraper used to extract the results from the page
-                MovieScrapers.MovieSearchScraper
+                # the scraper instance used to extract the results from the page
+                MovieScrapers.movieSearchScraper
 
   # adds a view to scrape search results view
   movieSite.addView \
@@ -43,8 +44,8 @@ views to scrape data.
                     url = 'http://www.example.com/movie/?q=' + params.id
                     url
                 ,
-                # the scraper used to extract the results from the page
-                MovieScrapers.MovieDetailScraper
+                # the scraper instance to extract the results from the page
+                MovieScrapers.movieDetailScraper
 
 ###
 class SiteAPI
@@ -80,7 +81,7 @@ class SiteAPI
   Registers a view for this SiteApi. Views are defined with a name for it which
     will be used by the {Server} to determine the URL. A urlGenerator function
     which will generate the URL based in the arguments passed to the {Server}
-    view registered. A {Scraper} subclass to determine the scraper to use to
+    view registered. A {Scraper} instance with the scraper to use to
     extract results and optionally options passed to the scraper.
 
   @param [String] id identifier used for the siteApi. It is used by the {Server}
@@ -88,15 +89,21 @@ class SiteAPI
     `SiteApi` instances added to the {Server}
   @param [String] urlPortion used by the {Server} instance, it determines the
     baseUrl under which all this `SiteApi` views will be available
+  @param [Scraper] scraper {Scraper} instance used to extract the data received
+    from the remote html view
   @param [Object] requestParams object with params to pass to the the scraper
     to all the views registered for this api
   ###
   addView: (viewName, urlGenerator, scraper, scraperOptions = {})->
+    # set the default scraperRequestParams to the scraper at this point
+    scraper.requestParams = u.defaults \
+                                u.clone(scraper.requestParams || {}),
+                                @scraperRequestParams
+
     @routes[viewName] =
       name: viewName
       urlGenerator: urlGenerator
       scraper: scraper
       scraperOptions: scraperOptions
-      scraperRequestParams: @scraperRequestParams
 
 module.exports = SiteAPI
