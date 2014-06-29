@@ -5,12 +5,13 @@ u = require 'underscore'
 
 class Server
   port: 3000
-  constructor: (@express=null, @port=3000) ->
+  constructor: (@express=null, @port=3000, @host='127.0.0.1') ->
     @express = @express or xpress()
     @siteApis = {}
 
-  serve: (serverOptions=null, port=null) ->
+  serve: (serverOptions=null, port=null, host=null) ->
     port = port or @port
+    host = host or @host
     args = [@express]
     me = @
     @express.get '/', (req, res) ->
@@ -24,7 +25,7 @@ class Server
 
     if serverOptions
       args.unshift serverOptions
-    (http.createServer args...).listen port
+    (http.createServer args...).listen port, host
 
   addSiteApi: (siteApi) ->
     routes = []
@@ -49,7 +50,7 @@ class Server
 
   apiResponseCallback: (req, res) ->
     (err, response, data) ->
-      res.set('Content-Type', 'application/json')
+      res.set('Content-Type', 'application/json; charset=utf-8')
       if err
         res.status(500)
         res.send (JSON.stringify err)
