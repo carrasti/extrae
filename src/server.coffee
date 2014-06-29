@@ -14,6 +14,10 @@ class Server
     host = host or @host
     args = [@express]
     me = @
+
+    # defines a index page which lists all the available scraping urls
+    # the view is defined inline here, perhaps could be better somewhere else
+    # or make it optional
     @express.get '/', (req, res) ->
       res.set('Content-Type', 'text/plain')
       ret = ''
@@ -22,9 +26,13 @@ class Server
           ret += route + "\n"
       res.send ret
 
-
+    # if there are server options take them out of the arguments.
+    # At the moment serverOptions is not used for anything but can be used
+    # later to override some options from the server.
     if serverOptions
       args.unshift serverOptions
+
+    # finally start serving
     (http.createServer args...).listen port, host
 
   addSiteApi: (siteApi) ->
@@ -40,13 +48,21 @@ class Server
     (req, res) =>
       scraper = route.scraper
 
+      # the options passed to the scraper include a reference to the request
+      # and to the server itself, this will allow do powerful things inside
+      # the scraper
+      scraperOptions = {
+        request: req,
+        express: @
+      }
+
+      # add optional scraper options defined in the SiteApi view
+      u.defaults(scraperOptions, route.scraperOptions or {})
+
       scraper.scrape \
           @apiResponseCallback(req, res),
           route.urlGenerator(req.query),
-          {
-          request: req,
-          express: @
-          }
+          scraperOptions
 
   apiResponseCallback: (req, res) ->
     (err, response, data) ->
