@@ -133,6 +133,11 @@ class UrlScraper extends Scraper
   # @param [String] url url to scrape
   constructor: (@url, args...) ->
     super args...
+
+  # Parameters to be passed to the request. This is useful if some headers
+  # or cookies need to be passed as parameters with request
+  requestParams: {}
+
   ###
   Makes the request to fetch the data and in a callback calls the
   {Scraper#scrape} method over the returned HTML
@@ -151,7 +156,11 @@ class UrlScraper extends Scraper
   ###
   scrape: (callback, url = null, options = null) ->
     url = if url then url else @url
-    request.get url, (error, response, body) =>
+
+    opts = @requestParams or {}
+    opts.url = url
+
+    request.get opts, (error, response, body) =>
       # not necessary but linter complains of fat arrow. It will fail otherwise
       # as we are calling `super` a bit lower.
       me = @
@@ -174,5 +183,17 @@ class UrlScraper extends Scraper
 
         callback null, response, o
 
+
+###
+UrlScraper which will set some parameters to each request sent using it
+###
+class UrlScraperWithParams extends UrlScraper
+  # @param [Object] requestParams object with params to pass to the requests
+  #   request, for example `{ "headers": { "Host" : "http://localhost" } }`
+  constructor: (@requestParams, args...) ->
+    super args...
+
+
 module.exports.Scraper = Scraper
 module.exports.UrlScraper = UrlScraper
+module.exports.UrlScraperWithParams = UrlScraperWithParams

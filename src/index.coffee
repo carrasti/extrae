@@ -10,6 +10,7 @@ Extrae =
   Collection: Collection
   Scraper: Scraper.Scraper
   UrlScraper: Scraper.UrlScraper
+  UrlScraperWithParams: Scraper.UrlScraperWithParams
   Processors: Processors
   Fields: Fields
   ExtractRule: ExtractRule
