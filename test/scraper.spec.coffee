@@ -116,3 +116,22 @@ describe 'Scraper', ()->
         (!!err).should.equal true
         done())
         , 'xyz://example.com'
+
+  describe 'UrlScraperWithParams', (done)->
+    headersObj = { headers: { 'Host': serverUrl } }
+    urlScraper = new Extrae.UrlScraperWithParams \
+                   headersObj,
+                   serverUrl,
+                   '#movies .movie',  # base selector for the items
+                   h.MovieCollection  # collection for the results
+
+    it 'should add the options to the request', (done) ->
+      urlScraper.requestParams.should.deep.equal(headersObj)
+      r = urlScraper.scrape (err, response, collection)->
+        r.headers.should.deep.equal headersObj.headers
+        (!err).should.equal true
+        collection.should.be.an.instanceof h.MovieCollection
+        collection.length.should.equal 2
+        m = collection.at(0)
+        (m.get 'title').should.equal h.MOVIE_DATA[0].title
+        done()
